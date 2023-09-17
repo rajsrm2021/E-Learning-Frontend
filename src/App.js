@@ -55,67 +55,67 @@ function App() {
 
   return (
     <Router>
-      {
-        loading ? (<Loader />) : (
-          <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
           <Header isAuthenticated={isAuthenticated} user={user} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/course/:id" element={<CoursePage />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route
-          path="/login"
-          element={
-            <ProtectedRoute
-              isAuthenticated={!isAuthenticated}
-              redirect="/profile"
-            >
-              <Login />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/subscribe" element={<Subscribe />} />
-        <Route
-          path="/register"
-          element={
-            <ProtectedRoute
-              isAuthenticated={!isAuthenticated}
-              redirect="/profile"
-            >
-              <Register />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/request" element={<Request />} />
-        <Route path="/forgetpassword" element={<ForgetPassword />} />
-        <Route path="/resetpassword/:token" element={<ResetPassword />} />
-        <Route path="*" element={<NotFound />} />
-        <Route path="/paymentsuccess" element={<PaymentSuccess />} />
-        <Route path="/paymentfail" element={<PaymentFail />} />
-        <Route path="/changepassword" element={<Changepassword />} />
-        <Route path="/updateprofile" element={<Updateprofile />} />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <Profile user = {user}/>
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/course/:id" element={<CoursePage />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route
+              path="/login"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={!isAuthenticated}
+                  redirect="/profile"
+                >
+                  <Login />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/subscribe" element={<Subscribe />} />
+            <Route
+              path="/register"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={!isAuthenticated}
+                  redirect="/profile"
+                >
+                  <Register />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/request" element={<Request />} />
+            <Route path="/forgetpassword" element={<ForgetPassword />} />
+            <Route path="/resetpassword/:token" element={<ResetPassword />} />
+            <Route path="*" element={<NotFound />} />
+            <Route path="/paymentsuccess" element={<PaymentSuccess />} />
+            <Route path="/paymentfail" element={<PaymentFail />} />
+            <Route path="/changepassword" element={<Changepassword />} />
+            <Route path="/updateprofile" element={<Updateprofile />} />
 
-        {/* Admin Routes */}
-        <Route path="/admin/dashboard" element={<Dashboard />} />
-        <Route path="/admin/createcourse" element={<CreateCourse />} />
-        <Route path="/admin/courses" element={<AdminCourses />} />
-        <Route path="/admin/users" element={<Users />} />
-      </Routes>
-      <Footer />
-      <Toaster />
-          </>
-        )
-      }
+            {/* Admin Routes */}
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/admin/createcourse" element={<CreateCourse />} />
+            <Route path="/admin/courses" element={<AdminCourses />} />
+            <Route path="/admin/users" element={<Users />} />
+          </Routes>
+          <Footer />
+          <Toaster />
+        </>
+      )}
     </Router>
   );
 }

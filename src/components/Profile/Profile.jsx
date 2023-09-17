@@ -23,23 +23,8 @@ import { RiDeleteBin7Fill } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import { fileUploadCss } from '../Auth/Register';
 
-const Profile = () => {
-  const user = {
-    name: 'raj jaiswal',
-    email: 'raj@gmail.com',
-    createdAt: String(new Date().toISOString()),
-    role: 'Admin',
-    subscription: {
-      status: 'active',
-    },
-    playlist: [
-      {
-        course: 'sdfs',
-        poster:
-          'https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png',
-      },
-    ],
-  };
+const Profile = ({user}) => {
+  
 
   const removeFromPlaylistHandler = id => {
     console.log(id);
@@ -63,7 +48,7 @@ const Profile = () => {
         padding={'8'}
       >
         <VStack>
-          <Avatar boxSize={'48'} />
+          <Avatar boxSize={'48'} src={user.avtar.url} />
 
           <Button onClick={onOpen} colorScheme="yellow" variant={'ghost'}>
             Change photo
@@ -85,7 +70,7 @@ const Profile = () => {
           {user.role !== 'admin' && (
             <HStack>
               <Text children="Subscription" fontWeight={'bold'} />
-              {user.subscription.status === 'active' ? (
+              {user.subscription && user.subscription.status === 'active' ? (
                 <Button color={'yellow.500'} variant={'ghost'}>
                   Cancle Subscription
                 </Button>
