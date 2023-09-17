@@ -4,6 +4,7 @@ import Home from './components/home/Home';
 import Header from './components/layout/Header/Header';
 import Courses from './components/Courses/Courses';
 import Footer from './components/layout/Footer';
+import Loader from './components/layout/Loader/Loader';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import ForgetPassword from './components/Auth/ForgetPassword';
@@ -33,7 +34,7 @@ function App() {
     e.preventDefault();
   });
 
-  const { isAuthenticated, user, message, error } = useSelector(
+  const { isAuthenticated, user, message, error, loading } = useSelector(
     state => state.user
   );
   const dispatch = useDispatch();
@@ -54,7 +55,10 @@ function App() {
 
   return (
     <Router>
-      <Header isAuthenticated={isAuthenticated} user={user} />
+      {
+        loading ? (<Loader />) : (
+          <>
+          <Header isAuthenticated={isAuthenticated} user={user} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -109,6 +113,9 @@ function App() {
       </Routes>
       <Footer />
       <Toaster />
+          </>
+        )
+      }
     </Router>
   );
 }
