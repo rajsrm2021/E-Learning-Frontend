@@ -37,6 +37,7 @@ function App() {
     state => state.user
   );
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (error) {
       toast.error(error);
