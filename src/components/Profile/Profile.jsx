@@ -22,6 +22,8 @@ import React, { useState } from 'react';
 import { RiDeleteBin7Fill } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import { fileUploadCss } from '../Auth/Register';
+import { useDispatch } from 'react-redux';
+import { updateProfilePicture } from '../../redux/actions/profile';
 
 const Profile = ({user}) => {
   
@@ -30,9 +32,15 @@ const Profile = ({user}) => {
     console.log(id);
   };
 
+  const dispatch = useDispatch();
+
   const changeImageSubmitHandler = (e, image) => {
     e.preventDefault();
     // console.log(image)
+    const myForm = new FormData();
+    myForm.append('file',image);
+    dispatch(updateProfilePicture(myForm));
+    
   };
 
   const { isOpen, onClose, onOpen } = useDisclosure();
