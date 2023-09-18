@@ -34,7 +34,7 @@ export const updateProfilePicture = formdata => async dispatch => {
     dispatch({ type: 'updateProfilePictureRequest' });
 
     const { data } = await axios.put(
-      `${server}/updateprofilepicture`,
+      `${server}//updateprofilepicture`,
       formdata,
       {
         headers: {
