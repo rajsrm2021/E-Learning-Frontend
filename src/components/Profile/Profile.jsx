@@ -33,7 +33,7 @@ const Profile = ({user}) => {
   const removeFromPlaylistHandler = async id => {
     console.log(id);
     await dispatch(removeFromPlaylist(id));
-    dispatch(loadUser);
+    dispatch(loadUser());
   };
 
 
