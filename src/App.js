@@ -46,11 +46,12 @@ function App() {
     }
     if (message) {
       toast.success(message);
+      dispatch({ type: 'clearMessage' });
     }
   }, [dispatch, error, message]);
 
   useEffect(() => {
-    dispatch(loadUser);
+    dispatch(loadUser());
   }, [dispatch]);
 
   return (
@@ -67,12 +68,19 @@ function App() {
               path="/profile"
               element={
                 <ProtectedRoute isAuthenticated={isAuthenticated}>
-                  <Profile user = {user}/>
+                  <Profile user={user} />
                 </ProtectedRoute>
               }
             />
             <Route path="/courses" element={<Courses />} />
-            <Route path="/course/:id" element={<CoursePage />} />
+            <Route
+              path="/course/:id"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <CoursePage user={user} />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/contact" element={<Contact />} />
             <Route
               path="/login"
@@ -85,7 +93,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/subscribe" element={<Subscribe />} />
+            <Route
+              path="/subscribe"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <Subscribe user={user} />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/register"
               element={
@@ -98,13 +113,40 @@ function App() {
               }
             />
             <Route path="/request" element={<Request />} />
-            <Route path="/forgetpassword" element={<ForgetPassword />} />
-            <Route path="/resetpassword/:token" element={<ResetPassword />} />
+            <Route
+              path="/forgetpassword"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={!isAuthenticated}
+                  redirect="/profile"
+                >
+                  <ForgetPassword />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/resetpassword/:token"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={!isAuthenticated}
+                  redirect="/profile"
+                >
+                  <ResetPassword />
+                </ProtectedRoute>
+              }
+            />
             <Route path="*" element={<NotFound />} />
             <Route path="/paymentsuccess" element={<PaymentSuccess />} />
             <Route path="/paymentfail" element={<PaymentFail />} />
             <Route path="/changepassword" element={<Changepassword />} />
-            <Route path="/updateprofile" element={<Updateprofile user = {user} />} />
+            <Route
+              path="/updateprofile"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <Updateprofile user={user} />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<Dashboard />} />

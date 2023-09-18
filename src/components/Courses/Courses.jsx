@@ -9,16 +9,26 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { getAllCourses } from '../../redux/actions/course';
+import toast from 'react-hot-toast';
+import { addToPlaylist } from '../../redux/actions/profile';
+import { loadUser } from '../../redux/actions/user';
 
 const Courses = () => {
   const [keyword, setKeyword] = useState('');
   const [category, setCategory] = useState('');
+  const { loading, courses, error,message } = useSelector(state => state.course);
 
-  const addToPlaylistHandler =()=>{
-    console.log("ok ok")
-  }
+  const dispatch = useDispatch();
+
+  const addToPlaylistHandler = async(courseId) => {
+    console.log('ok ok',courseId);
+    await dispatch(addToPlaylist(courseId));
+    dispatch(loadUser());
+  };
 
   const Course = ({
     views,
@@ -73,6 +83,7 @@ const Courses = () => {
             <Button colorScheme="yellow">Watch Now</Button>
           </Link>
           <Button
+          isLoading={loading}
             variant={'ghost'}
             colorScheme="yellow"
             onClick={() => addToPlaylistHandler(id)}
@@ -90,7 +101,24 @@ const Courses = () => {
     'Advance Calcus',
     'App Development',
     'Data Science',
+    'Web Development',
   ];
+
+ 
+
+  useEffect(() => {
+    dispatch(getAllCourses(category, keyword));
+
+    if (error) {
+      toast.error(error);
+      dispatch({ type: 'clearError' });
+    }
+    if (message) {
+      toast.success(message);
+      dispatch({ type: 'clearMessage' });
+    }
+  }, [category, keyword, dispatch, error, message]);
+
   return (
     <Container minH={'95vh'} maxW={'container.lg'} padding={'8'}>
       <Heading children="All Lectures" m={'8'} />
@@ -124,16 +152,24 @@ const Courses = () => {
         justifyContent={['flex-start', 'space-evenly']}
         alignItems={['center', 'flex-start']}
       >
-        <Course
-          title={'sample 1'}
-          description={'loremdsidfvuhieuhvi ekvjbei'}
-          views={23}
-          imagesrc={'https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png'}
-          id={'sam'}
-          creator={'dsvb'}
-          leactureCount={2}
-          addToPlaylistHandler={addToPlaylistHandler}
-        />
+        {courses.length > 0 ? (
+          courses.map(item => (
+            <Course
+              key={item._id}
+              title={item.title}
+              description={item.description}
+              views={item.views}
+              imagesrc={item.poster.url}
+              id={item._id}
+              creator={item.createdBy}
+              leactureCount={item.numOfViedos}
+              addToPlaylistHandler={addToPlaylistHandler}
+              loading={loading}
+            />
+          ))
+        ) : (
+          <Heading>Course not found</Heading>
+        )}
       </Stack>
     </Container>
   );

@@ -23,16 +23,20 @@ import { RiDeleteBin7Fill } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import { fileUploadCss } from '../Auth/Register';
 import { useDispatch } from 'react-redux';
-import { updateProfilePicture } from '../../redux/actions/profile';
+import { removeFromPlaylist, updateProfilePicture } from '../../redux/actions/profile';
+import { loadUser } from '../../redux/actions/user';
 
 const Profile = ({user}) => {
   
+  const dispatch = useDispatch();
 
-  const removeFromPlaylistHandler = id => {
+  const removeFromPlaylistHandler = async id => {
     console.log(id);
+    await dispatch(removeFromPlaylist(id));
+    dispatch(loadUser);
   };
 
-  const dispatch = useDispatch();
+
 
   const changeImageSubmitHandler = (e, image) => {
     e.preventDefault();
@@ -43,7 +47,7 @@ const Profile = ({user}) => {
     
   };
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { isOpen, onClose, onOpen} = useDisclosure();
   return (
     <Container minH={'95vh'} maxW={'container.lg'} py={'8'}>
       <Heading children={'Profile'} m={'8'} textTransform={'uppercase'} />
@@ -121,6 +125,7 @@ const Profile = ({user}) => {
                   </Button>
                 </Link>
                 <Button
+               
                   onClick={() => removeFromPlaylistHandler(item.course)}
                   color={'red.500'}
                 >
