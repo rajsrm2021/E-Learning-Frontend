@@ -18,17 +18,27 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RiDeleteBin7Fill } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import { fileUploadCss } from '../Auth/Register';
-import { useDispatch } from 'react-redux';
-import { removeFromPlaylist, updateProfilePicture } from '../../redux/actions/profile';
-import { loadUser } from '../../redux/actions/user';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  removeFromPlaylist,
+  updateProfilePicture,
+} from '../../redux/actions/profile';
+import { cancelSubscription, loadUser } from '../../redux/actions/user';
+import toast from 'react-hot-toast';
 
-const Profile = ({user}) => {
-  
+const Profile = ({ user }) => {
   const dispatch = useDispatch();
+
+  const { loading, message, error } = useSelector(state => state.profile);
+  const {
+    loading: subscriptionLoading,
+    message: subscriptionMessage,
+    error: subscriptionError,
+  } = useSelector(state => state.subscription);
 
   const removeFromPlaylistHandler = async id => {
     console.log(id);
@@ -36,18 +46,43 @@ const Profile = ({user}) => {
     dispatch(loadUser());
   };
 
-
-
-  const changeImageSubmitHandler = (e, image) => {
+  const changeImageSubmitHandler = async (e, image) => {
     e.preventDefault();
     // console.log(image)
     const myForm = new FormData();
-    myForm.append('file',image);
-    dispatch(updateProfilePicture(myForm));
-    
+    myForm.append('file', image);
+    await dispatch(updateProfilePicture(myForm));
+    dispatch(loadUser());
+
   };
 
-  const { isOpen, onClose, onOpen} = useDisclosure();
+  const cancelSubscriptionHandler = () => {
+    dispatch(cancelSubscription());
+    dispatch(loadUser());
+  };
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch({ type: 'clearError' });
+    }
+    if (message) {
+      toast.success(message);
+      dispatch({ type: 'clearMessage' });
+    }
+    
+    if (subscriptionError) {
+      toast.error(subscriptionError);
+      dispatch({ type: 'clearError' });
+    }
+    if (subscriptionMessage) {
+      toast.success(subscriptionMessage);
+      dispatch({ type: 'clearMessage' });
+    }
+    
+  }, [error, message, dispatch, subscriptionMessage, subscriptionError]);
+
+  const { isOpen, onClose, onOpen } = useDisclosure();
   return (
     <Container minH={'95vh'} maxW={'container.lg'} py={'8'}>
       <Heading children={'Profile'} m={'8'} textTransform={'uppercase'} />
@@ -83,8 +118,13 @@ const Profile = ({user}) => {
             <HStack>
               <Text children="Subscription" fontWeight={'bold'} />
               {user.subscription && user.subscription.status === 'active' ? (
-                <Button color={'yellow.500'} variant={'ghost'}>
-                  Cancle Subscription
+                <Button
+                isLoading={subscriptionLoading}
+                  onClick={cancelSubscriptionHandler}
+                  color={'yellow.500'}
+                  variant={'ghost'}
+                >
+                  Cancle Subscription 
                 </Button>
               ) : (
                 <Link to={'/subscribe'}>
@@ -95,10 +135,10 @@ const Profile = ({user}) => {
           )}
           <Stack direction={['column', 'row']} alignItems={'center'}>
             <Link to={'/updateprofile'}>
-              <Button>Update Profile</Button>
+              <Button isLoading={loading}>Update Profile</Button>
             </Link>
             <Link to={'/changepassword'}>
-              <Button>Change Password</Button>
+              <Button isLoading={loading}>Change Password</Button>
             </Link>
           </Stack>
         </VStack>
@@ -125,7 +165,6 @@ const Profile = ({user}) => {
                   </Button>
                 </Link>
                 <Button
-               
                   onClick={() => removeFromPlaylistHandler(item.course)}
                   color={'red.500'}
                 >

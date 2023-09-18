@@ -92,7 +92,7 @@ export const cancelSubscription = () => async dispatch => {
   try {
     dispatch({ type: 'cancelSubscriptionRequest' });
 
-    const { data } = await axios.delete(`${server}/subscribe/cancel`, {
+    const { data } = await axios.delete(`${server}/subscribe/cancle`, {
       withCredentials: true,
     });
 
