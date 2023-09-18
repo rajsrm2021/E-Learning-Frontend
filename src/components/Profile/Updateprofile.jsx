@@ -2,18 +2,20 @@ import { Button, Container, Heading, Input, VStack } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateProfile } from '../../redux/actions/profile';
+import { loadUser } from '../../redux/actions/user';
 
-const Updateprofile = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+const Updateprofile = ({user}) => {
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
 
 const dispatch = useDispatch();
 
-  const submitHandler = e => {
+  const submitHandler = async e => {
     e.preventDefault();
     
 
-    dispatch(updateProfile(name,email));
+   await dispatch(updateProfile(name,email));
+   dispatch(loadUser());
   };
 
   return (

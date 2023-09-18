@@ -104,7 +104,7 @@ function App() {
             <Route path="/paymentsuccess" element={<PaymentSuccess />} />
             <Route path="/paymentfail" element={<PaymentFail />} />
             <Route path="/changepassword" element={<Changepassword />} />
-            <Route path="/updateprofile" element={<Updateprofile />} />
+            <Route path="/updateprofile" element={<Updateprofile user = {user} />} />
 
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={<Dashboard />} />
