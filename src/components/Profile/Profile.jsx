@@ -33,7 +33,7 @@ import toast from 'react-hot-toast';
 const Profile = ({ user }) => {
   const dispatch = useDispatch();
 
-  const { loading, message, error } = useSelector(state => state.profile);
+  const {  message, error } = useSelector(state => state.profile);
   const {
     loading: subscriptionLoading,
     message: subscriptionMessage,
@@ -133,10 +133,10 @@ const Profile = ({ user }) => {
           )}
           <Stack direction={['column', 'row']} alignItems={'center'}>
             <Link to={'/updateprofile'}>
-              <Button isLoading={loading}>Update Profile</Button>
+              <Button>Update Profile</Button>
             </Link>
             <Link to={'/changepassword'}>
-              <Button isLoading={loading}>Change Password</Button>
+              <Button >Change Password</Button>
             </Link>
           </Stack>
         </VStack>
