@@ -53,12 +53,10 @@ const Profile = ({ user }) => {
     myForm.append('file', image);
     await dispatch(updateProfilePicture(myForm));
     dispatch(loadUser());
-
   };
 
   const cancelSubscriptionHandler = () => {
     dispatch(cancelSubscription());
-    dispatch(loadUser());
   };
 
   useEffect(() => {
@@ -70,7 +68,7 @@ const Profile = ({ user }) => {
       toast.success(message);
       dispatch({ type: 'clearMessage' });
     }
-    
+
     if (subscriptionError) {
       toast.error(subscriptionError);
       dispatch({ type: 'clearError' });
@@ -78,8 +76,8 @@ const Profile = ({ user }) => {
     if (subscriptionMessage) {
       toast.success(subscriptionMessage);
       dispatch({ type: 'clearMessage' });
+      dispatch(loadUser());
     }
-    
   }, [error, message, dispatch, subscriptionMessage, subscriptionError]);
 
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -119,12 +117,12 @@ const Profile = ({ user }) => {
               <Text children="Subscription" fontWeight={'bold'} />
               {user.subscription && user.subscription.status === 'active' ? (
                 <Button
-                isLoading={subscriptionLoading}
+                  isLoading={subscriptionLoading}
                   onClick={cancelSubscriptionHandler}
                   color={'yellow.500'}
                   variant={'ghost'}
                 >
-                  Cancle Subscription 
+                  Cancle Subscription
                 </Button>
               ) : (
                 <Link to={'/subscribe'}>
