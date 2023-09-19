@@ -1,47 +1,14 @@
 import { Box, Grid, Heading, Text, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import introviedo from '../../assets/videos/intro.mp4';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, useParams } from 'react-router-dom';
 import { getCourseLectures } from '../../redux/actions/course';
+import Loader from "../layout/Loader/Loader";
 
 const CoursePage = ({ user }) => {
   const [lectureNumber, setLectureNumber] = useState(0);
 
-  const lectures = [
-    {
-      _id: 'hhg',
-      title: 'sample1',
-      description: 'sample sdkjhs mskjdsks sjdhk',
-      viedo: {
-        url: 'skhss',
-      },
-    },
-    {
-      _id: 'hshg',
-      title: 'sample2',
-      description: 'sample sdkjhs mskjdsks sjdhk',
-      viedo: {
-        url: 'skhss',
-      },
-    },
-    {
-      _id: 'hgfhg',
-      title: 'sample3',
-      description: 'sample sdkjhs mskjdsks sjdhk',
-      viedo: {
-        url: 'skhss',
-      },
-    },
-    {
-      _id: 'hsgfh',
-      title: 'sample4',
-      description: 'sample sdkjhs mskjdsks sjdhk',
-      viedo: {
-        url: 'skhss',
-      },
-    },
-  ];
+  const { lectures, loading } = useSelector(state => state.course);
 
   const dispatch = useDispatch();
   const params = useParams();
@@ -57,42 +24,56 @@ const CoursePage = ({ user }) => {
     return <Navigate to={'/subscribe'} />;
   }
 
-  return (
-    <Grid minH={'90vh'} templateColumns={['1fr', '3fr 1fr']} m={'4'}>
-      <Box>
-        <video
-          width={'100%'}
-          controls
-          src={introviedo}
-          controlsList={'nodownload noremoteplayback'}
-          disablePictureInPicture
-          disableRemotePlayback
-        ></video>
-        <Heading
-          children={`#${lectureNumber + 1} ${lectures[lectureNumber].title}`}
-          m={'4'}
-        />
-        <Heading children={'Description'} m={'4'} />
-        <Text m={'4'} children={lectures[lectureNumber].description} />
-      </Box>
+  return loading ? (
+    <Loader />
+  ) : (
+    <Grid minH={'90vh'} templateColumns={['1fr', '3fr 1fr']}>
+      {lectures && lectures.length > 0 ? (
+        <>
+          <Box>
+            <video
+              width={'100%'}
+              controls
+              controlsList="nodownload noremoteplayback"
+              disablePictureInPicture
+              disableRemotePlayback
+              src={lectures[lectureNumber].video.url}
+            ></video>
 
-      <VStack>
-        {lectures.map((item, index) => (
-          <button
-            onClick={() => setLectureNumber(index)}
-            key={item._id}
-            style={{
-              width: '100%',
-              padding: '1rem',
-              textAlign: 'center',
-              margin: 0,
-              borderBottom: '1px solid rgba(0,0,0,0.2)',
-            }}
-          >
-            <Text noOfLines={'1'} children={`#${index + 1} ${item.title}`} />
-          </button>
-        ))}
-      </VStack>
+            <Heading
+              m="4"
+              children={`#${lectureNumber + 1} ${
+                lectures[lectureNumber].title
+              }`}
+            />
+
+            <Heading m="4" children="Description" />
+            <Text m="4" children={lectures[lectureNumber].description} />
+          </Box>
+
+          <VStack>
+            {lectures.map((element, index) => (
+              <button
+                onClick={() => setLectureNumber(index)}
+                key={element._id}
+                style={{
+                  width: '100%',
+                  padding: '1rem',
+                  textAlign: 'center',
+                  margin: 0,
+                  borderBottom: '1px solid rgba(0,0,0,0.2)',
+                }}
+              >
+                <Text noOfLines={1}>
+                  #{index + 1} {element.title}
+                </Text>
+              </button>
+            ))}
+          </VStack>
+        </>
+      ) : (
+        <Heading children="No Lectures" />
+      )}
     </Grid>
   );
 };
