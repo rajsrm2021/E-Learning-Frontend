@@ -74,15 +74,13 @@ const CourseModal = ({
 
               <Heading children={'Lectures'} size={'lg'} />
 
-              {lectures.map((item, index) => (
+              {lectures.map((item, i) => (
                 <ViedoCard
-                  key={index}
-                  title={'React COURSE'}
-                  description={
-                    'THIS IS A INTRO LEACTURE ksajfb klsv ljsfb jsahlvfb ljhvf djlheb vsbva viebfad vihehb dheb.'
-                  }
-                  num={index + 1}
-                  lectureId={'ffvlecture'}
+                  key={i}
+                  title={item.title}
+                  description={item.description}
+                  num={i + 1}
+                  lectureId={item._id}
                   courseId={id}
                   deleteButtonHandler={deleteButtonHandler}
                 />

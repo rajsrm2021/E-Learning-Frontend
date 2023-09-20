@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Box,
   Button,
@@ -20,19 +20,22 @@ import { RiDeleteBin7Fill } from 'react-icons/ri';
 import cursorImage from '../../../assets/images/cursor.png';
 import Sidebar from '../Sidebar';
 import CourseModal from './CourseModal';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllCourses, getCourseLectures } from '../../../redux/actions/course';
 
 const Admincourses = () => {
+  const dispatch = useDispatch();
 
-  const {courses} = useSelector(state=>state.course);
+  const { courses , lectures} = useSelector(state => state.course);
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const courseDetailHandler = userId => {
+  const courseDetailHandler = courseId => {
+    dispatch(getCourseLectures(courseId));
     onOpen();
   };
-  const deleteButtonHandler = userId => {
-    console.log(userId);
+  const deleteButtonHandler = courseId => {
+    console.log(courseId);
   };
 
   const deleteLectureButtonHandler = (courseId, leactureId) => {
@@ -40,10 +43,14 @@ const Admincourses = () => {
     console.log(leactureId);
   };
 
-  const addLectureHandler=(e,courseId,title,description,video)=>{
+  const addLectureHandler = (e, courseId, title, description, video) => {
     e.preventDefault();
+  };
 
-  }
+  useEffect(() => {
+    dispatch(getAllCourses());
+  }, [dispatch]);
+
   return (
     <Grid
       css={{
@@ -92,9 +99,10 @@ const Admincourses = () => {
           isOpen={isOpen}
           onClose={onClose}
           id={'shc'}
+          courseTitle={'react course'}
           deleteButtonHandler={deleteLectureButtonHandler}
           addLectureHandler={addLectureHandler}
-          courseTitle={'react course'}
+          lectures={lectures}
         />
       </Box>
 

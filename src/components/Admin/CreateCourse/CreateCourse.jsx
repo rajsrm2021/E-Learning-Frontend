@@ -147,7 +147,7 @@ const CreateCourse = () => {
               colorScheme={'purple'}
               type="submit"
             >
-              Create
+              Create Course
             </Button>
           </VStack>
         </form>
