@@ -20,21 +20,11 @@ import { RiDeleteBin7Fill } from 'react-icons/ri';
 import cursorImage from '../../../assets/images/cursor.png';
 import Sidebar from '../Sidebar';
 import CourseModal from './CourseModal';
+import { useSelector } from 'react-redux';
 
 const Admincourses = () => {
-  const courses = [
-    {
-      _id: 'kduhgfiuaghioau',
-      title: 'React Course',
-      category: 'web development',
-      poster: {
-        url: 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png',
-      },
-      createdBy: 'raj jaiswal',
-      views: 123,
-      numOfViedos: 12,
-    },
-  ];
+
+  const {courses} = useSelector(state=>state.course);
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
