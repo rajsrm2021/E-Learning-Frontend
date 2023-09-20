@@ -139,7 +139,7 @@ function Row({ item, updateHandler, deleteButtonHandler }) {
             Change Role
           </Button>
           <Button
-            color={'purple.600'}
+            color={'red'}
             onClick={() => deleteButtonHandler(item._id)}
           >
             <RiDeleteBin7Fill />

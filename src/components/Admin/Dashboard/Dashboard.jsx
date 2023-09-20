@@ -7,11 +7,14 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import cursorImage from '../../../assets/images/cursor.png';
 import Sidebar from '../Sidebar';
 import { RiArrowDownLine, RiArrowUpLine } from 'react-icons/ri';
 import { DoughnutChart, LineChart } from './Chart';
+import { useDispatch, useSelector } from 'react-redux';
+import { getDashboardStats } from '../../../redux/actions/admin';
+import Loader from '../../layout/Loader/Loader';
 
 const Databox = ({ tittle, qty, profit, qtypercentage }) => (
   <Box
@@ -51,6 +54,26 @@ const Bar = ({ title, value }) => (
 );
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+
+  const {
+    loading,
+    stats,
+    viewsCount,
+    subscriptionCount,
+    usersCount,
+    subscriptionPercentage,
+    viewsPercentage,
+    subscriptionProfit,
+    usersPercentage,
+    usersProfit,
+    viewsProfit,
+  } = useSelector(state => state.admin);
+
+  useEffect(() => {
+    dispatch(getDashboardStats());
+  }, [dispatch]);
+
   return (
     <Grid
       css={{
@@ -59,80 +82,110 @@ const Dashboard = () => {
       minH={'100vh'}
       templateColumns={['1fr', '5fr 1fr']}
     >
-      <Box boxSizing="border-box" py={'16'} px={['4', '0']}>
-        <Text
-          textAlign={'center'}
-          opacity={'0.5'}
-          children={`Last change was on ${String(new Date()).split('G')[0]}`}
-        />
-        <Heading
-          children={'Dashboard'}
-          ml={['0', '16']}
-          mb={'16'}
-          textAlign={['center', 'left']}
-        />
-
-        <Stack
-          direction={['column', 'row']}
-          minH={'24'}
-          justifyContent={'space-evenly'}
-        >
-          <Databox tittle="views" qty={23} profit="true" qtypercentage={30} />
-          <Databox tittle="Users" qty={888} profit="true" qtypercentage={80} />
-          <Databox
-            tittle="Subscriptions"
-            qty={12}
-            profit="false"
-            qtypercentage={-3}
+      {loading || !stats ? (
+        <Loader color="purple.500" />
+      ) : (
+        <Box boxSizing="border-box" py={'16'} px={['4', '0']}>
+          <Text
+            textAlign={'center'}
+            opacity={'0.5'}
+            children={`Last change was on ${
+              String(new Date(stats[11].createdAt)).split('G')[0]
+            }`}
           />
-        </Stack>
-
-        <Box
-          m={['0', '16']}
-          borderRadius={'lg'}
-          padding={['0', '16']}
-          mt={['4', '16']}
-          boxShadow={'-2px 0 10px rgba(107,70,193,0.5)'}
-        >
           <Heading
-            textAlign={['center', 'left']}
-            size={'md'}
-            children={'Views Graph'}
-            pt={['8', '0']}
+            children={'Dashboard'}
             ml={['0', '16']}
+            mb={'16'}
+            textAlign={['center', 'left']}
           />
-          {/* line graph here */}
-          <LineChart />
-        </Box>
 
-        <Grid templateColumns={['1fr', '2fr 1fr']}>
-          <Box p={'4'}>
+          <Stack
+            direction={['column', 'row']}
+            minH={'24'}
+            justifyContent={'space-evenly'}
+          >
+            <Databox
+              tittle="views"
+              qty={viewsCount}
+              profit={viewsProfit}
+              qtypercentage={viewsPercentage}
+            />
+            <Databox
+              tittle="Users"
+              qty={usersCount}
+              profit={usersProfit}
+              qtypercentage={usersPercentage}
+            />
+            <Databox
+              tittle="Subscriptions"
+              qty={subscriptionCount}
+              profit={subscriptionProfit}
+              qtypercentage={subscriptionPercentage}
+            />
+          </Stack>
+
+          <Box
+            m={['0', '16']}
+            borderRadius={'lg'}
+            padding={['0', '16']}
+            mt={['4', '16']}
+            boxShadow={'-2px 0 10px rgba(107,70,193,0.5)'}
+          >
             <Heading
               textAlign={['center', 'left']}
               size={'md'}
-              children="Progress Bar"
-              my={'8'}
+              children={'Views Graph'}
+              pt={['8', '0']}
               ml={['0', '16']}
             />
-            <Box>
-              <Bar title={'views'} value={23} />
-              <Bar title={'Users'} value={888} />
-              <Bar title={'Subscription'} value={-12} />
-            </Box>
+            {/* line graph here */}
+            <LineChart dataArray={stats.map(item => item.views)} />
           </Box>
 
-          <Box p={['0', '16']} boxSizing="border-box">
-            <Heading
-              textAlign={'center'}
-              size={'md'}
-              mb={'4'}
-              children={'Users'}
-            />
-            {/* {Donut graph} */}
-            <DoughnutChart />
-          </Box>
-        </Grid>
-      </Box>
+          <Grid templateColumns={['1fr', '2fr 1fr']}>
+            <Box p={'4'}>
+              <Heading
+                textAlign={['center', 'left']}
+                size={'md'}
+                children="Progress Bar"
+                my={'8'}
+                ml={['0', '16']}
+              />
+              <Box>
+                <Bar
+                  profit={viewsProfit}
+                  title={'views'}
+                  value={viewsPercentage}
+                />
+                <Bar
+                  profit={usersProfit}
+                  title={'Users'}
+                  value={usersPercentage}
+                />
+                <Bar
+                  profit={subscriptionProfit}
+                  title={'Subscription'}
+                  value={subscriptionPercentage}
+                />
+              </Box>
+            </Box>
+
+            <Box p={['0', '16']} boxSizing="border-box">
+              <Heading
+                textAlign={'center'}
+                size={'md'}
+                mb={'4'}
+                children={'Users'}
+              />
+              {/* {Donut graph} */}
+              <DoughnutChart
+                users={[subscriptionCount, usersCount - subscriptionCount]}
+              />
+            </Box>
+          </Grid>
+        </Box>
+      )}
       <Sidebar />
     </Grid>
   );
