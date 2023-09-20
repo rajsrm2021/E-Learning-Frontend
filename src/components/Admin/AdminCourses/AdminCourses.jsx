@@ -21,12 +21,22 @@ import cursorImage from '../../../assets/images/cursor.png';
 import Sidebar from '../Sidebar';
 import CourseModal from './CourseModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllCourses, getCourseLectures } from '../../../redux/actions/course';
+import {
+  getAllCourses,
+  getCourseLectures,
+} from '../../../redux/actions/course';
+import { deleteCourse } from '../../../redux/actions/admin';
+import toast from 'react-hot-toast';
 
 const Admincourses = () => {
   const dispatch = useDispatch();
 
-  const { courses , lectures} = useSelector(state => state.course);
+  const { courses, lectures } = useSelector(
+    state => state.course
+  );
+  const {  loading, error, message } = useSelector(
+    state => state.admin
+  );
 
   const { isOpen, onClose, onOpen } = useDisclosure();
 
@@ -35,7 +45,8 @@ const Admincourses = () => {
     onOpen();
   };
   const deleteButtonHandler = courseId => {
-    console.log(courseId);
+    // console.log(courseId);
+    dispatch(deleteCourse(courseId));
   };
 
   const deleteLectureButtonHandler = (courseId, leactureId) => {
@@ -48,8 +59,16 @@ const Admincourses = () => {
   };
 
   useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch({ type: 'clearError' });
+    }
+    if (message) {
+      toast.success(message);
+      dispatch({ type: 'clearMessage' });
+    }
     dispatch(getAllCourses());
-  }, [dispatch]);
+  }, [dispatch, error, message]);
 
   return (
     <Grid
@@ -103,6 +122,7 @@ const Admincourses = () => {
           deleteButtonHandler={deleteLectureButtonHandler}
           addLectureHandler={addLectureHandler}
           lectures={lectures}
+          loading={loading}
         />
       </Box>
 
@@ -111,7 +131,7 @@ const Admincourses = () => {
   );
 };
 
-function Row({ item, courseDetailHandler, deleteButtonHandler }) {
+function Row({ item, courseDetailHandler, deleteButtonHandler, loading }) {
   return (
     <Tr>
       <Td>{item._id}</Td>
@@ -129,12 +149,14 @@ function Row({ item, courseDetailHandler, deleteButtonHandler }) {
             variant={'outline'}
             color={'purple.500'}
             onClick={() => courseDetailHandler(item._id)}
+            isLoading={loading}
           >
             View Lectures
           </Button>
           <Button
             color={'purple.600'}
             onClick={() => deleteButtonHandler(item._id)}
+            isLoading={loading}
           >
             <RiDeleteBin7Fill />
           </Button>

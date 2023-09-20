@@ -26,7 +26,8 @@ const CourseModal = ({
   deleteButtonHandler,
   addLectureHandler,
   courseTitle,
-  lectures = [12, 3, 4, 5, 6, 7, 8],
+  lectures = [],
+  loading,
 }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -83,6 +84,7 @@ const CourseModal = ({
                   lectureId={item._id}
                   courseId={id}
                   deleteButtonHandler={deleteButtonHandler}
+                  isLoading={loading}
                 />
               ))}
             </Box>
@@ -133,7 +135,7 @@ const CourseModal = ({
                     ></video>
                   )}
 
-                  <Button w={'full'} colorScheme="purple" type="submit">
+                  <Button w={'full'} colorScheme="purple" type="submit" isLoading={loading}>
                     Upload
                   </Button>
                 </VStack>
