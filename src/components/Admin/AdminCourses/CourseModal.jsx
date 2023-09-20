@@ -15,7 +15,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { RiDeleteBin7Fill } from 'react-icons/ri';
 import { fileUploadCss } from '../../Auth/Register';
 
@@ -56,27 +57,28 @@ const CourseModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      size={'full'}
+      size="full"
       onClose={handleClose}
-      scrollBehavior="inside"
+      scrollBehavior="outside"
     >
       <ModalOverlay />
 
       <ModalContent>
         <ModalHeader>{courseTitle}</ModalHeader>
         <ModalCloseButton />
-        <ModalBody p={'16'}>
+
+        <ModalBody p="16">
           <Grid templateColumns={['1fr', '3fr 1fr']}>
             <Box px={['0', '16']}>
-              <Box my={'5'}>
+              <Box my="5">
                 <Heading children={courseTitle} />
-                <Heading children={`#${id}`} size={'sm'} opacity={0.4} />
+                <Heading children={`#${id}`} size="sm" opacity={0.4} />
               </Box>
 
-              <Heading children={'Lectures'} size={'lg'} />
+              <Heading children={'Lectures'} size="lg" />
 
               {lectures.map((item, i) => (
-                <ViedoCard
+                <VideoCard
                   key={i}
                   title={item.title}
                   description={item.description}
@@ -84,10 +86,11 @@ const CourseModal = ({
                   lectureId={item._id}
                   courseId={id}
                   deleteButtonHandler={deleteButtonHandler}
-                  isLoading={loading}
+                  loading={loading}
                 />
               ))}
             </Box>
+
             <Box>
               <form
                 onSubmit={e =>
@@ -96,9 +99,9 @@ const CourseModal = ({
               >
                 <VStack spacing={'4'}>
                   <Heading
-                    children={'Add lecture'}
+                    children="Add Lecture"
                     size={'md'}
-                    textTransform={'uppercase'}
+                    textTransform="uppercase"
                   />
 
                   <Input
@@ -117,7 +120,7 @@ const CourseModal = ({
                   <Input
                     accept="video/mp4"
                     required
-                    type="file"
+                    type={'file'}
                     focusBorderColor="purple.300"
                     css={{
                       '&::file-selector-button': {
@@ -127,6 +130,7 @@ const CourseModal = ({
                     }}
                     onChange={changeVideoHandler}
                   />
+
                   {videoPrev && (
                     <video
                       controlsList="nodownload"
@@ -135,7 +139,12 @@ const CourseModal = ({
                     ></video>
                   )}
 
-                  <Button w={'full'} colorScheme="purple" type="submit" isLoading={loading}>
+                  <Button
+                    isLoading={loading}
+                    w="full"
+                    colorScheme={'purple'}
+                    type="submit"
+                  >
                     Upload
                   </Button>
                 </VStack>
@@ -154,18 +163,19 @@ const CourseModal = ({
 
 export default CourseModal;
 
-function ViedoCard({
+function VideoCard({
   title,
   description,
   num,
   lectureId,
   courseId,
   deleteButtonHandler,
+  loading,
 }) {
   return (
     <Stack
       direction={['column', 'row']}
-      my={'8'}
+      my="8"
       borderRadius={'lg'}
       boxShadow={'0 0 10px rgba(107,70,193,0.5)'}
       justifyContent={['flex-start', 'space-between']}
@@ -176,7 +186,11 @@ function ViedoCard({
         <Text children={description} />
       </Box>
 
-      <Button color={'purple.600'} onClick={() => deleteButtonHandler}>
+      <Button
+        isLoading={loading}
+        color={'purple.600'}
+        onClick={() => deleteButtonHandler(courseId, lectureId)}
+      >
         <RiDeleteBin7Fill />
       </Button>
     </Stack>
