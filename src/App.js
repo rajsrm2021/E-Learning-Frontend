@@ -28,6 +28,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast, { Toaster } from 'react-hot-toast';
 import { loadUser } from './redux/actions/user';
 import { ProtectedRoute } from 'protected-route-react';
+import Notes from './components/Notes/Notes';
+// import Chatbot from './components/chatbot/Chatbot';
 
 function App() {
   window.addEventListener('contextmenu', e => {
@@ -60,6 +62,7 @@ function App() {
         <Loader />
       ) : (
         <>
+          {/* <Chatbot /> */}
           <Header isAuthenticated={isAuthenticated} user={user} />
           <Routes>
             <Route path="/" element={<Home />} />
@@ -73,6 +76,15 @@ function App() {
               }
             />
             <Route path="/courses" element={<Courses />} />
+            <Route
+              path="/notes"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <Notes />
+                </ProtectedRoute>
+              }
+            />
+
             <Route
               path="/course/:id"
               element={
