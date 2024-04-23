@@ -22,13 +22,13 @@ const LinkButton = ({ url = '/', title = 'Home', onClose }) => (
   </Link>
 );
 
-const Header = ({isAuthenticated=false,user}) => {
+const Header = ({ isAuthenticated = false, user }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  
-const dispatch = useDispatch();
+
+  const dispatch = useDispatch();
   const logoutHandler = () => {
     onClose();
-    dispatch(logout())
+    dispatch(logout());
   };
   return (
     <>
@@ -50,14 +50,19 @@ const dispatch = useDispatch();
       <Drawer placement="left" isOpen={isOpen} onClose={onClose}>
         <DrawerOverlay backdropFilter={'blur(3px)'} />
         <DrawerContent>
-          <DrawerHeader borderBottomWidth={'1px'}>course hero</DrawerHeader>
+          <DrawerHeader borderBottomWidth={'1px'}>E-Learning</DrawerHeader>
           <DrawerBody>
             <VStack spacing={'4'} alignItems={'flex-start'}>
               <LinkButton onClose={onClose} url="/" title="HOME" />
               <LinkButton
                 onClose={onClose}
                 url="/courses"
-                title="Brouse all courses"
+                title="Browse all courses"
+              />
+              <LinkButton
+                onClose={onClose}
+                url="/notes"
+                title="Browse all Notes"
               />
               <LinkButton
                 onClose={onClose}
