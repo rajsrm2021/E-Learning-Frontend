@@ -16,6 +16,7 @@ import { getAllCourses } from '../../redux/actions/course';
 import toast from 'react-hot-toast';
 import { addToPlaylist } from '../../redux/actions/profile';
 import { loadUser } from '../../redux/actions/user';
+import Loader from '../layout/Loader/Loader';
 
 const Course = ({
   views,
@@ -88,7 +89,9 @@ const Course = ({
 const Courses = () => {
   const [keyword, setKeyword] = useState('');
   const [category, setCategory] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
+  const coursesPerPage = 3;
 
   const addToPlaylistHandler = async couseId => {
     await dispatch(addToPlaylist(couseId));
@@ -120,7 +123,12 @@ const Courses = () => {
       toast.success(message);
       dispatch({ type: 'clearMessage' });
     }
-  }, [category, keyword, dispatch, error, message]);
+  }, [category, keyword, currentPage, dispatch, error, message]);
+
+  const indexOfLastCourse = currentPage * coursesPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+  const currentCourses = courses.slice(indexOfFirstCourse, indexOfLastCourse);
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   return (
     <Container minH={'95vh'} maxW="container.lg" paddingY={'8'}>
@@ -150,31 +158,45 @@ const Courses = () => {
         ))}
       </HStack>
 
-      <Stack
-        direction={['column', 'row']}
-        flexWrap="wrap"
-        justifyContent={['flex-start', 'space-evenly']}
-        alignItems={['center', 'flex-start']}
-      >
-        {courses.length > 0 ? (
-          courses.map(item => (
-            <Course
-              key={item._id}
-              title={item.title}
-              description={item.description}
-              views={item.views}
-              imageSrc={item.poster.url}
-              id={item._id}
-              creator={item.createdBy}
-              lectureCount={item.numOfVideos}
-              addToPlaylistHandler={addToPlaylistHandler}
-              loading={loading}
-            />
-          ))
-        ) : (
-          <Heading mt="4" children="Courses Not Found" />
+      {loading ? (
+        <Loader />
+      ) : (
+        <Stack
+          direction={['column', 'row']}
+          flexWrap="wrap"
+          justifyContent={['flex-start', 'space-evenly']}
+          alignItems={['center', 'flex-start']}
+        >
+          {currentCourses.length > 0 ? (
+            currentCourses.map(item => (
+              <Course
+                key={item._id}
+                title={item.title}
+                description={item.description}
+                views={item.views}
+                imageSrc={item.poster.url}
+                id={item._id}
+                creator={item.createdBy}
+                lectureCount={item.numOfVideos}
+                addToPlaylistHandler={addToPlaylistHandler}
+              />
+            ))
+          ) : (
+            <Heading mt="4" children="Courses Not Found" />
+          )}
+        </Stack>
+      )}
+
+      {/* Pagination controls */}
+      <HStack spacing="2" mt="4" justifyContent="center">
+        {Array.from({ length: Math.ceil(courses.length / coursesPerPage) }).map(
+          (_, index) => (
+            <Button key={index} onClick={() => paginate(index + 1)}>
+              {index + 1}
+            </Button>
+          )
         )}
-      </Stack>
+      </HStack>
     </Container>
   );
 };
