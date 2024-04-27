@@ -1,26 +1,40 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Box, Flex, Text, Button, Heading, Input } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Text,
+  Button,
+  Heading,
+  Input,
+  Select,
+} from '@chakra-ui/react';
 import dummyData from './dummy.json';
 
 const SRMNotes = ({ data }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedFolder, setSelectedFolder] = useState('All');
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8); // Number of items per page
 
-  // Function to handle search
-  const handleSearch = useCallback(() => {
-    const filteredData = data.filter(item =>
+  // Function to handle search and folder selection
+  const handleSearchAndFolderSelect = useCallback(() => {
+    let filteredData = data.filter(item =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    if (selectedFolder !== 'All') {
+      filteredData = filteredData.filter(
+        item => item.folder === selectedFolder
+      );
+    }
     setSearchResults(filteredData);
-    setCurrentPage(1); // Reset to the first page after search
-  }, [data, searchQuery]);
+    setCurrentPage(1); // Reset to the first page after search or folder change
+  }, [data, searchQuery, selectedFolder]);
 
-  // Trigger search automatically when searchQuery changes
+  // Trigger search and folder selection automatically when searchQuery or selectedFolder changes
   useEffect(() => {
-    handleSearch();
-  }, [handleSearch]);
+    handleSearchAndFolderSelect();
+  }, [handleSearchAndFolderSelect]);
 
   // Group data by name
   const groupedData =
@@ -56,14 +70,29 @@ const SRMNotes = ({ data }) => {
       <Heading as="h1" mb="4" textAlign="center">
         SRM Notes
       </Heading>
-      <Input
-        type="text"
-        placeholder="Search notes..."
-        value={searchQuery}
-        onChange={e => setSearchQuery(e.target.value)}
-        mb="4"
-        maxWidth="300px"
-      />
+      <Flex mb="4" alignItems="center">
+        <Input
+          type="text"
+          placeholder="Search notes..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          mr="2"
+          maxWidth="300px"
+        />
+        <Select
+          value={selectedFolder}
+          onChange={e => setSelectedFolder(e.target.value)}
+          maxWidth="200px"
+        >
+          <option value="All">All Notes</option>
+          {/* Add options for each folder */}
+          {Array.from(new Set(data.map(item => item.folder))).map(folder => (
+            <option key={folder} value={folder}>
+              {folder}
+            </option>
+          ))}
+        </Select>
+      </Flex>
       {searchResults.length === 0 && searchQuery !== '' && (
         <Text mb="4" textAlign="center" color="red.500">
           No documents found.
@@ -86,25 +115,12 @@ const SRMNotes = ({ data }) => {
             <Box p="6">
               <Box d="flex" alignItems="baseline">
                 <Text fontSize="sm" color="gray.500">
-                  PDF Document
+                  {item.folder}
                 </Text>
               </Box>
               <Box mt="1" fontWeight="semibold" lineHeight="tight">
                 <Text fontSize="lg">{item.name}</Text>
               </Box>
-            </Box>
-
-            <Box p="6">
-              {/* Your PDF Viewer Component */}
-              {/* Replace this with your PDF viewer component */}
-              {/* <Box borderWidth="1px" borderRadius="lg" p="4" bg="gray.100">
-                <iframe
-                  title={item.name}
-                  src={item.pdfLink}
-                  width="100%"
-                  height="300px"
-                ></iframe>
-              </Box> */}
             </Box>
 
             <Box p="6" borderTopWidth="1px" borderColor="gray.200">
